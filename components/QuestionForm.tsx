@@ -15,10 +15,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+// The schema is now strictly typed to booleans to satisfy the Vercel build
 const formSchema = z.object({
-  content: z.string().min(10).max(500),
-  is_anonymous: z.boolean().default(false),
-  wants_podcast: z.boolean().default(false),
+  content: z.string().min(10, "Question must be at least 10 characters").max(500),
+  is_anonymous: z.boolean(),
+  wants_podcast: z.boolean(),
 });
 
 export default function QuestionForm() {
@@ -28,7 +29,11 @@ export default function QuestionForm() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { content: "", is_anonymous: false, wants_podcast: false },
+    defaultValues: { 
+      content: "", 
+      is_anonymous: false, 
+      wants_podcast: false 
+    },
   });
 
   async function handleInitialSubmit(values: z.infer<typeof formSchema>) {
@@ -42,11 +47,8 @@ export default function QuestionForm() {
   async function handleRegisterAndSubmit() {
     setIsSubmitting(true);
     try {
-      // 1. Create User Account
       const user = await account.create(ID.unique(), regData.email, regData.password, regData.name);
-      // 2. Start Session
       await account.createEmailPasswordSession(regData.email, regData.password);
-      // 3. Finalize Question with the new User ID
       await finalizeSubmission(form.getValues(), user.$id);
       setShowRegisterModal(false);
     } catch (error: any) {
