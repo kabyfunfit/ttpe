@@ -19,7 +19,9 @@ export interface Question {
   $id: string;
   $createdAt: string;
   content: string;
+  status: 'pending' | 'answered' | 'rejected';
+  wants_podcast: boolean;
   is_anonymous: boolean;
   vote_count: number;
-  author_id?: string; // Added this optional field
+  author_id?: string | null; // Fix: Added null to match Appwrite's requirements
 }
