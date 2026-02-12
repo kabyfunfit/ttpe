@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // This tells Next.js/Turbopack to leave the SDK alone
+  serverExternalPackages: ['node-appwrite'],
 };
 
 export default nextConfig;
