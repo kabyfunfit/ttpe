@@ -4,7 +4,7 @@ import { ID } from 'node-appwrite';
 import { createAdminClient } from './appwrite';
 import { revalidatePath } from 'next/cache';
 
-export async function submitQuestion(formData: FormData, authorId?: string) {
+export async function submitQuestion(formData: FormData, authorId?: string | null) {
   const rawFormData = {
     content: formData.get('content') as string,
     is_anonymous: formData.get('is_anonymous') === 'on',
@@ -22,9 +22,9 @@ export async function submitQuestion(formData: FormData, authorId?: string) {
         content: rawFormData.content,
         is_anonymous: rawFormData.is_anonymous,
         wants_podcast: rawFormData.wants_podcast,
-        status: 'pending', // Matches your Enum
+        status: 'pending',
         vote_count: 0,
-        author_id: authorId || null, // Links to the user if they registered
+        author_id: authorId || null, // Ensures we send null if no ID exists
       }
     );
 
